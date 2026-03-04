@@ -1,0 +1,84 @@
+services:
+    mongodb:
+        image: mongo:6.0
+        container_name: api-monitoring-mongo
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongo_data:/data/db
+        networks:
+            - api-monitoring-network
+        restart: unless-stopped
+
+    postgres:
+        image: postgres:15-alpine
+        container_name: api-monitoring-postgres
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: api_monitoring
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_INTIDB_ARGS: "--encoding=UTF-8"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./scripts/init-postgres.sql:/docker-entrypoint-intidb.d/init-postgres.sql
+        networks:
+            - api-monitoring-network
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d api_monitoring"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    
+    rabbitmq:
+        image: rabbitmq:3-management-alpine
+        container_name: api-monitoring-rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: api_user
+            RABBITMQ_DEFAULT_PASS: api_password
+            RABBITMQ_DEFAULT_VHOST: api_monitoring
+        ports:
+            - "5672:5672" # AMQP
+            - "15672:15672" # Management UI
+        networks:
+            - api-monitoring-network
+        restart: unless-stopped
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagonstics", "-q", "ping"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+    
+    pgadmin:
+        image: dpage/pgadmin4:9.0
+        container_name: api-monitoring-pgadmin
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@example.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+            - "8080:80"
+        networks:
+            - api-monitoring-network
+        volumes:
+            - pgadmin_data:/var/lib/pgadmin
+        restart: unless-stopped
+        depends_on:
+            - postgres
+
+volumes:
+    mongo_data:
+        driver: local
+    postgres_data:
+        driver: local
+    rabbitmq_data:
+        driver: local
+    pgadmin_data:
+        driver: local
+
+networks:
+    api-monitoring-network:
+        driver: bridge
