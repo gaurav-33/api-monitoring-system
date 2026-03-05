@@ -19,19 +19,19 @@ services:
             POSTGRES_DB: api_monitoring
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: password
-            POSTGRES_INTIDB_ARGS: "--encoding=UTF-8"
+            POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
         volumes:
             - postgres_data:/var/lib/postgresql/data
-            - ./scripts/init-postgres.sql:/docker-entrypoint-intidb.d/init-postgres.sql
+            - ./scripts/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
         networks:
             - api-monitoring-network
         restart: unless-stopped
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U postgres -d api_monitoring"]
+            test: [ "CMD-SHELL", "pg_isready -U postgres -d api_monitoring" ]
             interval: 10s
             timeout: 5s
             retries: 5
-    
+
     rabbitmq:
         image: rabbitmq:3-management-alpine
         container_name: api-monitoring-rabbitmq
@@ -48,11 +48,11 @@ services:
         volumes:
             - rabbitmq_data:/var/lib/rabbitmq
         healthcheck:
-            test: ["CMD", "rabbitmq-diagonstics", "-q", "ping"]
+            test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
             interval: 30s
             timeout: 10s
             retries: 5
-    
+
     pgadmin:
         image: dpage/pgadmin4:9.0
         container_name: api-monitoring-pgadmin
@@ -68,6 +68,28 @@ services:
         restart: unless-stopped
         depends_on:
             - postgres
+
+    api-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: api-monitoring-app
+        ports:
+            - "3000:3000"
+        depends_on:
+            mongodb:
+                condition: service_started
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+        restart: unless-stopped
+        networks:
+            - api-monitoring-network
+        volumes:
+            - ./logs/:/app/logs
+        env_file:
+            - .env
 
 volumes:
     mongo_data:
