@@ -14,7 +14,7 @@ class PostgresConnection {
      * @returns {Promise<pg.Pool>}
      */
     getPool() {
-        if (this.pool) {
+        if (!this.pool) {
             this.pool = new Pool({
                 host: config.postgres.host,
                 port: config.postgres.port,
@@ -42,7 +42,7 @@ class PostgresConnection {
         try {
             const pool = this.getPool()
             const client = await pool.connect()
-            await client.query('SELECT NOW()')
+            const result = await client.query('SELECT NOW()')
             client.release()
 
             logger.info(`Postgres connection test successful at ${result.rows[0].now}`)
