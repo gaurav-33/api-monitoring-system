@@ -20,13 +20,13 @@ const config = {
         host: process.env.PG_HOST || "localhost",
         port: parseInt(process.env.PG_PORT || "5432", 10),
         user: process.env.PG_USER || "postgres",
-        password: process.env.PG_PASSWORD || "postgres",
+        password: process.env.PG_PASSWORD || "password",
         database: process.env.PG_DATABASE || "api_monitoring",
     },
 
     // RabbitMQ
     rabbitmq: {
-        uri: process.env.RABBITMQ_URI || "amqp://localhost:5672",
+        uri: process.env.RABBITMQ_URI || "amqp://api_user:api_password@localhost:5672/api_monitoring",
         queue: process.env.RABBITMQ_QUEUE || "api_hits",
         publisherConfirms: process.env.RABBITMQ_PUBLISHER_CONFIRMS === "true" || false,
         retryAttempts: parseInt(process.env.RABBITMQ_RETRY_ATTEMPTS || "3", 10),
