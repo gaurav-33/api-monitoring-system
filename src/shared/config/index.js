@@ -45,6 +45,10 @@ const config = {
         maxRequests: parseInt(process.env.RATE_LIMIT_MAX || "1000", 10), // 1000req per 15 min per IP
     },
 
+    // apiKey Schema
+    apiKey: {
+        expiresIn: parseInt(process.env.API_KEY_EXPIRY_DAYS || "365", 10,)
+    }
 }
 
 export default config;
