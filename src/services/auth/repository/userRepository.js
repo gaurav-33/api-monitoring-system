@@ -11,8 +11,8 @@ class MongoUserRepository extends BaseRepository {
     async create(userData) {
         try {
             let data = { ...userData }
-            if (data.role === APPLICATION_ROLES.SUPER_ADMIN && !data.permission) {
-                data.permission = {
+            if (data.role === APPLICATION_ROLES.SUPER_ADMIN && !data.permissions) {
+                data.permissions = {
                     canCreateApiKeys: true,
                     canManageUsers: true,
                     canViewAnalytics: true,
