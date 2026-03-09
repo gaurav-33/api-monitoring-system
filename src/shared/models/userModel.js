@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { SecurityUtils } from "../../shared/utils/securityUtils.js";
+import bcrypt from 'bcryptjs'
 
 /**
  * User Schema with different role
@@ -91,17 +93,16 @@ const userSchema = new mongoose.Schema({
     collection: 'users'
 })
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
     if (!this.isModified('password')) {
-        return next()
+        return
     }
     try {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(this.password, salt)
         this.password = hashedPassword
-        next()
     } catch (error) {
-        next(error)
+        throw new Error(error)
     }
 })
 
