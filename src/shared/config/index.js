@@ -48,7 +48,16 @@ const config = {
     // apiKey Schema
     apiKey: {
         expiresIn: parseInt(process.env.API_KEY_EXPIRY_DAYS || "365", 10,)
+    },
+
+    // cookie config
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        expiresIn: parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000 || 24 * 60 * 60 * 1000
     }
+    
 }
 
 export default config;
