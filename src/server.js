@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors"
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import config from "./shared/config/index.js";
 import logger from "./shared/config/logger.js"
 import AppResponse from "./shared/utils/appResponse.js";
@@ -9,6 +10,8 @@ import MongoConnection from "./shared/config/mongodb.js";
 import PostgresConnection from "./shared/config/postgres.js"
 import RabbitMQConnection from "./shared/config/rabbitmq.js"
 
+// Routers
+import authRouter from "./services/auth/routes/authRoute.js"
 
 /**
  * Initialize Express app
@@ -19,14 +22,15 @@ const app = express()
  * Middlewares
  */
 app.use(helmet())
-app.use(cors({ origin: '*' }))
+app.use(cors({ origin: '*', credentials: true }))
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use((req, res, next) => {
     logger.info(`${req.method} ${req.path}`, {
         ip: req.ip,
-        userAgent: req.header['user-agent']
+        userAgent: req.headers['user-agent']
     })
     next()
 })
@@ -60,10 +64,12 @@ app.get('/', (req, res) => {
     )
 })
 
+app.use('/api/auth', authRouter)
+
 /**
  * 404 Handler
  */
-app.get((req, res) => {
+app.use((req, res) => {
     res.status(404).json(AppResponse.error("Endpoint not found, BE CAREFULL!!", 404))
 })
 
