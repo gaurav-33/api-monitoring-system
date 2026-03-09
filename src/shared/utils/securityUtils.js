@@ -7,7 +7,7 @@ class SecurityUtils {
         requireSpecialCharacters: (process.env.PASSWORD_REQUIRE_SPECIAL_CHARACTERS || 'true') === 'true'
     }
 
-    
+
 
     static validatePassword(password) {
         const errors = []
@@ -50,3 +50,5 @@ class SecurityUtils {
         }
     }
 }
+
+export { SecurityUtils }
