@@ -12,6 +12,7 @@ import RabbitMQConnection from "./shared/config/rabbitmq.js"
 
 // Routers
 import authRouter from "./services/auth/routes/authRoute.js"
+import clientRouter from "./services/client/routes/clientRoute.js"
 
 /**
  * Initialize Express app
@@ -65,6 +66,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRouter)
+app.use('/api', clientRouter)
 
 /**
  * 404 Handler
