@@ -56,8 +56,23 @@ const config = {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         expiresIn: parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000 || 24 * 60 * 60 * 1000
+    },
+
+    // circuit breaker
+    circuitBreaker: {
+        failureThreshold: 5,
+        cooldownMs: 30000,
+        halfOpenMaxAttempts: 3
+    },
+
+    // retry strategy
+    retryStrategy: {
+        maxRetries: 3,
+        baseDelayMs: 1000,
+        maxDelayMs: 5000,
+        jitterFactor: 0.3,
     }
-    
+
 }
 
 export default config;

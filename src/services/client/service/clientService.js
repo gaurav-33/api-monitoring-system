@@ -197,4 +197,24 @@ export class ClientService {
             throw error
         }
     }
+
+    async getClientByApiKey(apiKey) {
+        try {
+            const key = await this.apiKeyRepository.findByKeyValue(apiKey)
+            if (!key) {
+                return null
+            }
+            if (key.isExpired()) {
+                return null
+            }
+            const client = key.clientId
+            return {
+                client,
+                apiKey: key
+            }
+        } catch (error) {
+            logger.error('Error while fetching client by API key', error)
+            throw error
+        }
+    }
 }
