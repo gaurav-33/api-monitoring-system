@@ -20,7 +20,7 @@ export function createEventProducer(overrides = {}) {
 
     const channelManager = overrides.channelManager ?? new ConfirmChannelManager({ rabbitmq: rmq, logger: log })
     const circuitBreaker = overrides.circuitBreaker ?? new CircuitBreaker({
-        failureThreshold: 2, //config.circuitBreaker.failureThreshold ?? 5,
+        failureThreshold: config.circuitBreaker.failureThreshold ?? 5,
         cooldownMs: config.circuitBreaker.cooldownMs ?? 30000,
         halfOpenMaxAttempts: config.circuitBreaker.halfOpenMaxAttempts ?? 3,
         logger: log

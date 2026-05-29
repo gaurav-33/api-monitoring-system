@@ -1,4 +1,4 @@
-import MongoApiKeyRepository from "../repository/ApiKeyRepository.js"
+import MongoApiKeyRepository from "../repository/apiKeyRepository.js"
 import MongoClientRepository from "../repository/clientRepository.js"
 import MongoUserRepository from "../../auth/repository/userRepository.js"
 import { ClientService } from "../service/clientService.js"
