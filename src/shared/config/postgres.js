@@ -33,6 +33,7 @@ class PostgresConnection {
             logger.info('Postgres connection established')
             return this.pool
         }
+        return this.pool
     }
 
     /**
