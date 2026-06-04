@@ -84,12 +84,33 @@ services:
             rabbitmq:
                 condition: service_healthy
         restart: unless-stopped
+        healthcheck: 
+            test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
         networks:
             - api-monitoring-network
         volumes:
             - ./logs/:/app/logs
         env_file:
             - .env
+
+    consumer:
+        build:
+            context: .
+            dockerfile: Dockerfile.consumer
+        container_name: api-monitorig-consumer
+        env_file:
+            - .env
+        volumes:
+            - ./logs/:/app/logs
+        networks:
+            - api-monitoring-network
+        depends_on:
+            mongodb:
+                condition: service_started
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
 
 volumes:
     mongo_data:
