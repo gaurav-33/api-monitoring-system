@@ -14,6 +14,7 @@ import RabbitMQConnection from "./shared/config/rabbitmq.js"
 import authRouter from "./services/auth/routes/authRoute.js"
 import clientRouter from "./services/client/routes/clientRoute.js"
 import ingestRouter from "./services/ingest/routes/ingestRoutes.js"
+import analyticsRouter from "./services/analytics/routes/analyticsRoutes.js"
 
 /**
  * Initialize Express app
@@ -68,6 +69,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRouter)
 app.use('/api/hit', ingestRouter)
+app.use("/api/analytics", analyticsRouter)
 app.use('/api', clientRouter)
 
 /**

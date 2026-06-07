@@ -112,6 +112,22 @@ services:
             rabbitmq:
                 condition: service_healthy
 
+    # mongo-express:
+    #     image: mongo-express:1.0.2-18
+    #     container_name: api-monitoring-mongoUI
+    #     environment:
+    #         ME_CONFIG_MONGODB_SERVER: mongodb
+    #         ME_CONFIG_MONGODB_PORT: 27017
+    #         ME_CONFIG_BASICAUTH_USERNAME: admin
+    #         ME_CONFIG_BASICAUTH_PASSWORD: admin
+    #     networks:
+    #         - api-monitoring-network
+    #     ports:
+    #         - "8081:8081"
+    #     restart: unless-stopped
+    #     depends_on:
+    #         - mongodb
+
 volumes:
     mongo_data:
         driver: local
