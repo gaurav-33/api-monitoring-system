@@ -27,7 +27,7 @@ const validateApiKey = async (req, res, next) => {
             });
             return res
                 .status(403)
-                .json(AppResponse('Invalid API key', 403))
+                .json(AppResponse.error('Invalid API key', 403))
         }
         const { client, apiKey: apiKeyObj } = result
 
