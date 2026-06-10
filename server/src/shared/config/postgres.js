@@ -15,16 +15,27 @@ class PostgresConnection {
      */
     getPool() {
         if (!this.pool) {
-            this.pool = new Pool({
-                host: config.postgres.host,
-                port: config.postgres.port,
-                user: config.postgres.user,
-                password: config.postgres.password,
-                database: config.postgres.database,
+            const poolConfig = {
                 max: 20,
                 idleTimeoutMillis: 30000,
                 connectionTimeoutMillis: 2000,
-            })
+            };
+
+            if (config.postgres.uri) {
+                poolConfig.connectionString = config.postgres.uri;
+            } else {
+                poolConfig.host = config.postgres.host;
+                poolConfig.port = config.postgres.port;
+                poolConfig.user = config.postgres.user;
+                poolConfig.password = config.postgres.password;
+                poolConfig.database = config.postgres.database;
+            }
+
+            if (config.postgres.ssl) {
+                poolConfig.ssl = { rejectUnauthorized: false };
+            }
+
+            this.pool = new Pool(poolConfig)
 
             this.pool.on('error', (err) => {
                 logger.error('Postgres connection error:', err)

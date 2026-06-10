@@ -367,29 +367,31 @@ async function startConsumerWithRetry() {
     }
 }
 
-process.on('SIGINT', async()=>{
+process.on('SIGINT', async () => {
     logger.info('Received SIGINT, shutting down gracefully...')
     await consumer.stop()
     process.exit(0)
 })
 
-process.on('SIGTERM', async()=>{
+process.on('SIGTERM', async () => {
     logger.info('Received SIGTERM, shutting down gracefully...')
     await consumer.stop()
     process.exit(0)
 })
 
-process.on('uncaughtException', (error)=>{
+process.on('uncaughtException', (error) => {
     logger.info('Uncaught Exception:', error)
     process.exit(1)
 })
 
-process.on('unhandledRejection', (reason, promise)=>{
+process.on('unhandledRejection', (reason, promise) => {
     logger.info('Unhandled Promise Rejection at:', promise, 'reason', reason)
     process.exit(1)
 })
 
+if (config.deployOnSameServer !== true) {
+    startConsumerWithRetry()
+}
 
-startConsumerWithRetry()
-
-export default consumer
+export default consumer;
+export { startConsumerWithRetry };

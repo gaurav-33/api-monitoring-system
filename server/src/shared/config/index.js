@@ -17,11 +17,13 @@ const config = {
 
     // Postgres sql
     postgres: {
+        uri: process.env.PG_URI || process.env.POSTGRES_URI || process.env.DATABASE_URL,
         host: process.env.PG_HOST || "localhost",
         port: parseInt(process.env.PG_PORT || "5432", 10),
         user: process.env.PG_USER || "postgres",
         password: process.env.PG_PASSWORD || "password",
         database: process.env.PG_DATABASE || "api_monitoring",
+        ssl: process.env.PG_SSL === 'true' || process.env.NODE_ENV === 'production',
     },
 
     // RabbitMQ
@@ -71,8 +73,9 @@ const config = {
         baseDelayMs: 1000,
         maxDelayMs: 5000,
         jitterFactor: 0.3,
-    }
+    },
 
+    deployOnSameServer: process.env.RUN_CONSUMER_ON_RENDER === 'true'
 }
 
 export default config;

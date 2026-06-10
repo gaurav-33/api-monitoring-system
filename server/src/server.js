@@ -16,6 +16,9 @@ import clientRouter from "./services/client/routes/clientRoute.js"
 import ingestRouter from "./services/ingest/routes/ingestRoutes.js"
 import analyticsRouter from "./services/analytics/routes/analyticsRoutes.js"
 
+// Consumer
+import consumer, { startConsumerWithRetry } from "./services/processor/consumer.js";
+
 /**
  * Initialize Express app
  */
@@ -112,12 +115,20 @@ async function startServer() {
             logger.info(`Server avaiable at: http://localhost:${config.port}`)
         })
 
+        if (config.deployOnSameServer === true) {
+            logger.info('RUN_CONSUMER is set to true. Starting embedded consumer...');
+            await startConsumerWithRetry();
+        }
+
         const gracefulShutdown = async (signal) => {
             logger.info(`${signal} received, shutting down gracefully...`)
 
             server.close(async () => {
                 logger.info('HTTP server closed')
                 try {
+                    if (config.deployOnSameServer === true) {
+                        await consumer.stop();
+                    }
                     await MongoConnection.disconnect()
                     await PostgresConnection.close()
                     await RabbitMQConnection.close()
