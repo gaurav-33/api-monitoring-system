@@ -61,7 +61,7 @@ const config = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: process.env.COOKIE_SAME_SITE || process.env.NODE_ENV === 'production' ? 'none' : 'strict',
         expiresIn: parseInt(process.env.COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000 || 24 * 60 * 60 * 1000
     },
 
