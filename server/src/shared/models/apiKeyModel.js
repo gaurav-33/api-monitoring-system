@@ -93,8 +93,7 @@ const apiKeySchema = new mongoose.Schema({
         default: () => {
             const days = config.apiKey.expiresIn
             return new Date(Date.now() + days * 24 * 60 * 60 * 1000)
-        },
-        index: true
+        }
     },
     metadata: {
         createdBy: {
