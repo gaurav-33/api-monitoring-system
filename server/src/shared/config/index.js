@@ -52,6 +52,11 @@ const config = {
         expiresIn: parseInt(process.env.API_KEY_EXPIRY_DAYS || "365", 10,)
     },
 
+    // cors config
+    cors: {
+        origin: process.env.CORS_ORIGIN || '*'
+    },
+
     // cookie config
     cookie: {
         httpOnly: true,
